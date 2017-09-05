@@ -2,12 +2,15 @@
 [![npm version](https://badge.fury.io/js/homebridge-mi-fan.svg)](https://badge.fury.io/js/homebridge-mi-fan)
 
 XiaoMi fan plugins for HomeBridge.   
+   
 Thanks for [nfarina](https://github.com/nfarina)(the author of [homebridge](https://github.com/nfarina/homebridge)), [OpenMiHome](https://github.com/OpenMiHome/mihome-binary-protocol), [aholstenson](https://github.com/aholstenson)(the author of [miio](https://github.com/aholstenson/miio)), all other developer and testers.   
-
+   
 **Note: If you find bugs, please submit them to [issues](https://github.com/YinHangCode/homebridge-mi-fan/issues) or [QQ Group: 107927710](//shang.qq.com/wpa/qunwpa?idkey=8b9566598f40dd68412065ada24184ef72c6bddaa11525ca26c4e1536a8f2a3d).**   
 
 ![](https://raw.githubusercontent.com/YinHangCode/homebridge-mi-fan/master/images/Fan.jpg)
 
+## Pre-Requirements
+1.Make sure your IOS version is ios11 or later.   
 ## Installation
 1. Install HomeBridge, please follow it's [README](https://github.com/nfarina/homebridge/blob/master/README.md).   
 If you are using Raspberry Pi, please read [Running-HomeBridge-on-a-Raspberry-Pi](https://github.com/nfarina/homebridge/wiki/Running-HomeBridge-on-a-Raspberry-Pi).   
