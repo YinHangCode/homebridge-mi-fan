@@ -79,6 +79,7 @@ FanAccessory.prototype.getServices = function() {
             });
         }.bind(this))
         .on('set', function(value, callback) {
+            that.platform.log.debug("[MiFanPlatform][DEBUG]FanAccessory - Active - setActive: " + value);
             that.device.call("set_power", [value ? "on" : "off"]).then(result => {
                 that.platform.log.debug("[MiFanPlatform][DEBUG]FanAccessory - Active - setActive Result: " + result);
                 if(result[0] === "ok") {
@@ -129,6 +130,7 @@ FanAccessory.prototype.getServices = function() {
             });
         }.bind(this))
         .on('set', function(value, callback) {
+            that.platform.log.debug("[MiFanPlatform][DEBUG]FanAccessory - SwingMode - setSwingModeControls: " + value);
             that.device.call("set_angle_enable", [value ? "on" : "off"]).then(result => {
                 that.platform.log.debug("[MiFanPlatform][DEBUG]FanAccessory - SwingMode - setSwingModeControls Result: " + result);
                 if(result[0] === "ok") {
@@ -158,6 +160,7 @@ FanAccessory.prototype.getServices = function() {
             });
         }.bind(this))
         .on('set', function(value, callback, context) {
+            that.platform.log.debug("[MiFanPlatform][DEBUG]FanAccessory - RotationDirection - setRotationDirection: " + value);
             if(Characteristic.RotationDirection.COUNTER_CLOCKWISE == value) {
                 that.device.call("set_natural_level", [rotationSpeedCharacteristic.value]).then(result => {
                     that.platform.log.debug("[MiFanPlatform][DEBUG]FanAccessory - RotationDirection - setRotationDirection Result: " + result);
@@ -201,6 +204,7 @@ FanAccessory.prototype.getServices = function() {
             });
         }.bind(this))
         .on('set', function(value, callback) {
+            that.platform.log.debug("[MiFanPlatform][DEBUG]FanAccessory - RotationSpeed - setRotationSpeed: " + value);
             if(value > 0) {
                 if(Characteristic.RotationDirection.COUNTER_CLOCKWISE == rotationDirectionCharacteristic.value) {
                     that.device.call("set_natural_level", [value]).then(result => {
@@ -372,6 +376,7 @@ BuzzerSwitchAccessory.prototype.getBuzzerState = function(callback) {
 
 BuzzerSwitchAccessory.prototype.setBuzzerState = function(value, callback) {
     var that = this;
+    that.platform.log.debug("[MiFanPlatform][DEBUG]LEDBulbAccessory - BuzzerSwitch - setBuzzerState: " + value);
     that.device.call("set_buzzer", [value ? "on" : "off"]).then(result => {
         that.platform.log.debug("[MiFanPlatform][DEBUG]BuzzerSwitchAccessory - BuzzerSwitch - setBuzzerState Result: " + result);
         if(result[0] === "ok") {
@@ -401,7 +406,7 @@ LEDBulbAccessory.prototype.getServices = function() {
         .setCharacteristic(Characteristic.Model, "ZhiMi Fan")
         .setCharacteristic(Characteristic.SerialNumber, "Undefined");
     services.push(infoService);
-    
+
     var switchLEDService = new Service.Lightbulb(this.name);
     var onCharacteristic = switchLEDService.getCharacteristic(Characteristic.On);
     var brightnessCharacteristic = switchLEDService.addCharacteristic(Characteristic.Brightness);
@@ -410,65 +415,67 @@ LEDBulbAccessory.prototype.getServices = function() {
         .on('get', function(callback) {
             this.device.call("get_prop", ["led_b"]).then(result => {
                 that.platform.log.debug("[MiFanPlatform][DEBUG]LEDBulbAccessory - switchLED - getLEDPower: " + result);
-                if(result[0] == 0) {
-                    brightnessCharacteristic.updateValue(100);
-                } else if (result[0] == 1) {
-                    brightnessCharacteristic.updateValue(50);
-                } else if (result[0] == 2) {
-                    brightnessCharacteristic.updateValue(0);
-                }
-                callback(null, result[0] === 0 ? 0 : 1);
+                callback(null, result[0] === 2 ? false : true);
             }).catch(function(err) {
                 that.platform.log.error("[MiFanPlatform][ERROR]LEDBulbAccessory - switchLED - getLEDPower Error: " + err);
                 callback(err);
             });
         }.bind(this))
         .on('set', function(value, callback) {
-            var led_b_value;
-            if(value) {
-                if(brightnessCharacteristic.value > 0 && brightnessCharacteristic.value <= 50) {
-                    led_b_value = 1;
-                } else if (brightnessCharacteristic.value > 50 && brightnessCharacteristic.value <= 100) {
-                    led_b_value = 0;
-                }
-            } else {
-                led_b_value = 2;
-            }
-            
-            this.device.call("set_led_b", [led_b_value]).then(result => {
-                that.platform.log.debug("[MiFanPlatform][DEBUG]LEDBulbAccessory - switchLED - setLEDPower Result: " + result);
-                if(result[0] === "ok") {
-                    callback(null);
-                } else {
-                    callback(result[0]);
-                }            
-            }).catch(function(err) {
-                that.platform.log.error("[MiFanPlatform][ERROR]LEDBulbAccessory - switchLED - setLEDPower Error: " + err);
-                callback(err);
-            });
+            that.platform.log.debug("[MiFanPlatform][DEBUG]LEDBulbAccessory - switchLED - setLEDPower: " + value + ", nowValue: " + onCharacteristic.value);
+            that.setLedB(value ? that.getLevelByBrightness(brightnessCharacteristic.value) : 2, callback);
         }.bind(this));
     brightnessCharacteristic
-        .on('set', function(value, callback) {
-            var led_b_value;
-            if(value > 0 && value <= 50) {
-                led_b_value = 1;
-            } else if (value > 50 && value <= 100) {
-                led_b_value = 0;
-            }
-            
-            this.device.call("set_led_b", [led_b_value]).then(result => {
-                that.platform.log.debug("[MiFanPlatform][DEBUG]LEDBulbAccessory - switchLED - setLEDPower Result: " + result);
-                if(result[0] === "ok") {
-                    callback(null);
-                } else {
-                    callback(result[0]);
-                }            
+        .on('get', function(callback) {
+            this.device.call("get_prop", ["led_b"]).then(result => {
+                that.platform.log.debug("[MiFanPlatform][DEBUG]LEDBulbAccessory - switchLED - getLEDPower: " + result);
+                if(result[0] == 0) {
+                    if(brightnessCharacteristic.value > 50 && brightnessCharacteristic.value <= 100) {
+                        callback(null, brightnessCharacteristic.value);
+                    } else {
+                        callback(null, 100);
+                    }
+                } else if(result[0] == 1) {
+                    if(brightnessCharacteristic.value > 0 && brightnessCharacteristic.value <= 50) {
+                        callback(null, brightnessCharacteristic.value);
+                    } else {
+                        callback(null, 50);
+                    }
+                } else if(result[0] == 2) {
+                    callback(null, 0);
+                }
             }).catch(function(err) {
-                that.platform.log.error("[MiFanPlatform][ERROR]LEDBulbAccessory - switchLED - setLEDPower Error: " + err);
+                that.platform.log.error("[MiFanPlatform][ERROR]LEDBulbAccessory - switchLED - getLEDPower Error: " + err);
                 callback(err);
             });
         }.bind(this));
     services.push(switchLEDService);
 
     return services;
+}
+
+LEDBulbAccessory.prototype.setLedB = function(led_b, callback) {
+    var that = this;
+    that.platform.log.debug("[MiFanPlatform][DEBUG]LEDBulbAccessory - switchLED - setLedB: " + led_b);
+    this.device.call("set_led_b", [led_b]).then(result => {
+        that.platform.log.debug("[MiFanPlatform][DEBUG]LEDBulbAccessory - switchLED - setLEDBrightness Result: " + result);
+        if(result[0] === "ok") {
+            callback(null);
+        } else {
+            callback(result[0]);
+        }
+    }).catch(function(err) {
+        that.platform.log.error("[MiFanPlatform][ERROR]LEDBulbAccessory - switchLED - setLEDBrightness Error: " + err);
+        callback(err);
+    });
+}
+
+LEDBulbAccessory.prototype.getLevelByBrightness = function(brightness) {
+    if(brightness == 0) {
+        return 2;
+    } else if(brightness > 0 && brightness <= 50) {
+        return 1;
+    } else if (brightness > 50 && brightness <= 100) {
+        return 0;
+    }
 }

@@ -61,5 +61,7 @@ miio --discover --sync
 Wait until you get output.   
 For more information about token, please refer to [OpenMiHome](https://github.com/OpenMiHome/mihome-binary-protocol) and [miio](https://github.com/aholstenson/miio).   
 ## Version Logs
+### 0.0.2
+1.fixed bug that led switch error.   
 ### 0.0.1
 1.support for XiaoMi Fan.   
