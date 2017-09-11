@@ -85,7 +85,7 @@ ZhiMiFanFanAccessory.prototype.getServices = function() {
                 if(result[0] === "ok") {
                     callback(null);
                 } else {
-                    callback(result[0]);
+                    callback(new Error(result[0]));
                 }            
             }).catch(function(err) {
                 that.platform.log.error("[MiFanPlatform][ERROR]ZhiMiFanFanAccessory - Active - setActive Error: " + err);
@@ -111,7 +111,7 @@ ZhiMiFanFanAccessory.prototype.getServices = function() {
                 if(result[0] === "ok") {
                     callback(null);
                 } else {
-                    callback(result[0]);
+                    callback(new Error(result[0]));
                 }            
             }).catch(function(err) {
                 that.platform.log.error("[MiFanPlatform][ERROR]ZhiMiFanFanAccessory - LockPhysicalControls - setLockPhysicalControls Error: " + err);
@@ -137,7 +137,7 @@ ZhiMiFanFanAccessory.prototype.getServices = function() {
                 if(result[0] === "ok") {
                     callback(null);
                 } else {
-                    callback(result[0]);
+                    callback(new Error(result[0]));
                 }            
             }).catch(function(err) {
                 that.platform.log.error("[MiFanPlatform][ERROR]ZhiMiFanFanAccessory - SwingMode - setSwingModeControls Error: " + err);
@@ -168,7 +168,7 @@ ZhiMiFanFanAccessory.prototype.getServices = function() {
                     if(result[0] === "ok") {
                         callback(null);
                     } else {
-                        callback(result[0]);
+                        callback(new Error(result[0]));
                     }
                 }).catch(function(err) {
                     that.platform.log.error("[MiFanPlatform][ERROR]ZhiMiFanFanAccessory - RotationDirection - setRotationDirection Error: " + err);
@@ -180,7 +180,7 @@ ZhiMiFanFanAccessory.prototype.getServices = function() {
                     if(result[0] === "ok") {
                         callback(null);
                     } else {
-                        callback(result[0]);
+                        callback(new Error(result[0]));
                     }
                 }).catch(function(err) {
                     that.platform.log.error("[MiFanPlatform][ERROR]ZhiMiFanFanAccessory - RotationDirection - setRotationDirection Error: " + err);
@@ -213,7 +213,7 @@ ZhiMiFanFanAccessory.prototype.getServices = function() {
                         if(result[0] === "ok") {
                             callback(null);
                         } else {
-                            callback(result[0]);
+                            callback(new Error(result[0]));
                         }
                     }).catch(function(err) {
                         that.platform.log.error("[MiFanPlatform][ERROR]ZhiMiFanFanAccessory - RotationSpeed - setRotationSpeed Error: " + err);
@@ -225,7 +225,7 @@ ZhiMiFanFanAccessory.prototype.getServices = function() {
                         if(result[0] === "ok") {
                             callback(null);
                         } else {
-                            callback(result[0]);
+                            callback(new Error(result[0]));
                         }
                     }).catch(function(err) {
                         that.platform.log.error("[MiFanPlatform][ERROR]ZhiMiFanFanAccessory - RotationSpeed - setRotationSpeed Error: " + err);
@@ -383,7 +383,7 @@ ZhiMiFanBuzzerSwitchAccessory.prototype.setBuzzerState = function(value, callbac
         if(result[0] === "ok") {
             callback(null);
         } else {
-            callback(result[0]);
+            callback(new Error(result[0]));
         }            
     }).catch(function(err) {
         that.platform.log.error("[MiFanPlatform][ERROR]ZhiMiFanBuzzerSwitchAccessory - BuzzerSwitch - setBuzzerState Error: " + err);
@@ -463,7 +463,7 @@ ZhiMiFanLEDBulbAccessory.prototype.setLedB = function(led_b, callback) {
         if(result[0] === "ok") {
             callback(null);
         } else {
-            callback(result[0]);
+            callback(new Error(result[0]));
         }
     }).catch(function(err) {
         that.platform.log.error("[MiFanPlatform][ERROR]ZhiMiFanLEDBulbAccessory - switchLED - setLEDBrightness Error: " + err);

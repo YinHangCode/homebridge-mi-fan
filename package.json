@@ -1,6 +1,6 @@
 {
   "name": "homebridge-mi-fan",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "XiaoMi fan plugins for HomeBridge(https://github.com/nfarina/homebridge).",
   "keywords": [
     "homebridge-plugin"
