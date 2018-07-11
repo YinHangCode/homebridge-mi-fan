@@ -21,19 +21,19 @@ MiDCVariableFrequencyFan = function(platform, config) {
     
     this.accessories = {};
     if(!this.config['fanDisable'] && this.config['fanName'] && this.config['fanName'] != "") {
-        this.accessories['fanAccessory'] = new ZhiMiFanFanAccessory(this);
+        this.accessories['fanAccessory'] = new MiDCVFFanFanAccessory(this);
     }
     if(!this.config['temperatureDisable'] && this.config['temperatureName'] && this.config['temperatureName'] != "") {
-        this.accessories['temperatureAccessory'] = new ZhiMiFanTemperatureAccessory(this);
+        this.accessories['temperatureAccessory'] = new MiDCVFFanTemperatureAccessory(this);
     }
     if(!this.config['humidityDisable'] && this.config['humidityName'] && this.config['humidityName'] != "") {
-        this.accessories['humidityAccessory'] = new ZhiMiFanHumidityAccessory(this);
+        this.accessories['humidityAccessory'] = new MiDCVFFanHumidityAccessory(this);
     }
     if(!this.config['buzzerSwitchDisable'] && this.config['buzzerSwitchName'] && this.config['buzzerSwitchName'] != "") {
-        this.accessories['buzzerSwitchAccessory'] = new ZhiMiFanBuzzerSwitchAccessory(this);
+        this.accessories['buzzerSwitchAccessory'] = new MiDCVFFanBuzzerSwitchAccessory(this);
     }
     if(!this.config['ledBulbDisable'] && this.config['ledBulbName'] && this.config['ledBulbName'] != "") {
-        this.accessories['ledBulbAccessory'] = new ZhiMiFanLEDBulbAccessory(this);
+        this.accessories['ledBulbAccessory'] = new MiDCVFFanLEDBulbAccessory(this);
     }
     var accessoriesArr = this.obj2array(this.accessories);
     
@@ -43,13 +43,13 @@ MiDCVariableFrequencyFan = function(platform, config) {
 }
 inherits(MiDCVariableFrequencyFan, Base);
 
-ZhiMiFanFanAccessory = function(dThis) {
+MiDCVFFanFanAccessory = function(dThis) {
     this.device = dThis.device;
     this.name = dThis.config['fanName'];
     this.platform = dThis.platform;
 }
 
-ZhiMiFanFanAccessory.prototype.getServices = function() {
+MiDCVFFanFanAccessory.prototype.getServices = function() {
     var that = this;
     var services = [];
 
@@ -74,26 +74,26 @@ ZhiMiFanFanAccessory.prototype.getServices = function() {
     activeCharacteristic
         .on('get', function(callback) {
             that.device.call("get_prop", ["power"]).then(result => {
-                that.platform.log.debug("[MiFanPlatform][DEBUG]ZhiMiFanFanAccessory - Active - getActive: " + result);
+                that.platform.log.debug("[MiFanPlatform][DEBUG]MiDCVFFanFanAccessory - Active - getActive: " + result);
                 callback(null, result[0] === "on" ? Characteristic.Active.ACTIVE : Characteristic.Active.INACTIVE);
                 currentTemperatureCharacteristic.updateValue(33);
                 currentRelativeHumidityCharacteristic.updateValue(44);
             }).catch(function(err) {
-                that.platform.log.error("[MiFanPlatform][ERROR]ZhiMiFanFanAccessory - Active - getActive Error: " + err);
+                that.platform.log.error("[MiFanPlatform][ERROR]MiDCVFFanFanAccessory - Active - getActive Error: " + err);
                 callback(err);
             });
         }.bind(this))
         .on('set', function(value, callback) {
-            that.platform.log.debug("[MiFanPlatform][DEBUG]ZhiMiFanFanAccessory - Active - setActive: " + value);
+            that.platform.log.debug("[MiFanPlatform][DEBUG]MiDCVFFanFanAccessory - Active - setActive: " + value);
             that.device.call("set_power", [value ? "on" : "off"]).then(result => {
-                that.platform.log.debug("[MiFanPlatform][DEBUG]ZhiMiFanFanAccessory - Active - setActive Result: " + result);
+                that.platform.log.debug("[MiFanPlatform][DEBUG]MiDCVFFanFanAccessory - Active - setActive Result: " + result);
                 if(result[0] === "ok") {
                     callback(null);
                 } else {
                     callback(new Error(result[0]));
                 }            
             }).catch(function(err) {
-                that.platform.log.error("[MiFanPlatform][ERROR]ZhiMiFanFanAccessory - Active - setActive Error: " + err);
+                that.platform.log.error("[MiFanPlatform][ERROR]MiDCVFFanFanAccessory - Active - setActive Error: " + err);
                 callback(err);
             });
         }.bind(this));
@@ -102,24 +102,24 @@ ZhiMiFanFanAccessory.prototype.getServices = function() {
     lockPhysicalControlsCharacteristic
         .on('get', function(callback) {
             that.device.call("get_prop", ["child_lock"]).then(result => {
-                that.platform.log.debug("[MiFanPlatform][DEBUG]ZhiMiFanFanAccessory - LockPhysicalControls - getLockPhysicalControls: " + result);
+                that.platform.log.debug("[MiFanPlatform][DEBUG]MiDCVFFanFanAccessory - LockPhysicalControls - getLockPhysicalControls: " + result);
                 callback(null, result[0] === "on" ? Characteristic.LockPhysicalControls.CONTROL_LOCK_ENABLED : Characteristic.LockPhysicalControls.CONTROL_LOCK_DISABLED);
             }).catch(function(err) {
-                that.platform.log.error("[MiFanPlatform][ERROR]ZhiMiFanFanAccessory - LockPhysicalControls - getLockPhysicalControls Error: " + err);
+                that.platform.log.error("[MiFanPlatform][ERROR]MiDCVFFanFanAccessory - LockPhysicalControls - getLockPhysicalControls Error: " + err);
                 callback(err);
             });
         }.bind(this))
         .on('set', function(value, callback) {
-            that.platform.log.debug("[MiFanPlatform][DEBUG]ZhiMiFanFanAccessory - LockPhysicalControls - setLockPhysicalControls: " + value);
+            that.platform.log.debug("[MiFanPlatform][DEBUG]MiDCVFFanFanAccessory - LockPhysicalControls - setLockPhysicalControls: " + value);
             that.device.call("set_child_lock", [value ? "on" : "off"]).then(result => {
-                that.platform.log.debug("[MiFanPlatform][DEBUG]ZhiMiFanFanAccessory - LockPhysicalControls - setLockPhysicalControls Result: " + result);
+                that.platform.log.debug("[MiFanPlatform][DEBUG]MiDCVFFanFanAccessory - LockPhysicalControls - setLockPhysicalControls Result: " + result);
                 if(result[0] === "ok") {
                     callback(null);
                 } else {
                     callback(new Error(result[0]));
                 }            
             }).catch(function(err) {
-                that.platform.log.error("[MiFanPlatform][ERROR]ZhiMiFanFanAccessory - LockPhysicalControls - setLockPhysicalControls Error: " + err);
+                that.platform.log.error("[MiFanPlatform][ERROR]MiDCVFFanFanAccessory - LockPhysicalControls - setLockPhysicalControls Error: " + err);
                 callback(err);
             });
         }.bind(this));
@@ -128,24 +128,24 @@ ZhiMiFanFanAccessory.prototype.getServices = function() {
     swingModeControlsCharacteristic
         .on('get', function(callback) {
             that.device.call("get_prop", ["angle_enable"]).then(result => {
-                that.platform.log.debug("[MiFanPlatform][DEBUG]ZhiMiFanFanAccessory - SwingMode - getSwingModeControls: " + result);
+                that.platform.log.debug("[MiFanPlatform][DEBUG]MiDCVFFanFanAccessory - SwingMode - getSwingModeControls: " + result);
                 callback(null, result[0] === "on" ? Characteristic.SwingMode.SWING_ENABLED : Characteristic.SwingMode.SWING_DISABLED);
             }).catch(function(err) {
-                that.platform.log.error("[MiFanPlatform][ERROR]ZhiMiFanFanAccessory - SwingMode - getSwingModeControls Error: " + err);
+                that.platform.log.error("[MiFanPlatform][ERROR]MiDCVFFanFanAccessory - SwingMode - getSwingModeControls Error: " + err);
                 callback(err);
             });
         }.bind(this))
         .on('set', function(value, callback) {
-            that.platform.log.debug("[MiFanPlatform][DEBUG]ZhiMiFanFanAccessory - SwingMode - setSwingModeControls: " + value);
+            that.platform.log.debug("[MiFanPlatform][DEBUG]MiDCVFFanFanAccessory - SwingMode - setSwingModeControls: " + value);
             that.device.call("set_angle_enable", [value ? "on" : "off"]).then(result => {
-                that.platform.log.debug("[MiFanPlatform][DEBUG]ZhiMiFanFanAccessory - SwingMode - setSwingModeControls Result: " + result);
+                that.platform.log.debug("[MiFanPlatform][DEBUG]MiDCVFFanFanAccessory - SwingMode - setSwingModeControls Result: " + result);
                 if(result[0] === "ok") {
                     callback(null);
                 } else {
                     callback(new Error(result[0]));
                 }            
             }).catch(function(err) {
-                that.platform.log.error("[MiFanPlatform][ERROR]ZhiMiFanFanAccessory - SwingMode - setSwingModeControls Error: " + err);
+                that.platform.log.error("[MiFanPlatform][ERROR]MiDCVFFanFanAccessory - SwingMode - setSwingModeControls Error: " + err);
                 callback(err);
             });
         }.bind(this));
@@ -154,41 +154,41 @@ ZhiMiFanFanAccessory.prototype.getServices = function() {
     rotationDirectionCharacteristic
         .on('get', function(callback) {
             that.device.call("get_prop", ["natural_level"]).then(result => {
-                that.platform.log.debug("[MiFanPlatform][DEBUG]ZhiMiFanFanAccessory - RotationDirection - getRotationDirection: " + result);
+                that.platform.log.debug("[MiFanPlatform][DEBUG]MiDCVFFanFanAccessory - RotationDirection - getRotationDirection: " + result);
                 if(result[0] > 0) {
                     callback(null, Characteristic.RotationDirection.COUNTER_CLOCKWISE);
                 } else {
                     callback(null, Characteristic.RotationDirection.CLOCKWISE);
                 }
             }).catch(function(err) {
-                that.platform.log.error("[MiFanPlatform][ERROR]ZhiMiFanFanAccessory - RotationDirection - getRotationDirection Error: " + err);
+                that.platform.log.error("[MiFanPlatform][ERROR]MiDCVFFanFanAccessory - RotationDirection - getRotationDirection Error: " + err);
                 callback(err);
             });
         }.bind(this))
         .on('set', function(value, callback, context) {
-            that.platform.log.debug("[MiFanPlatform][DEBUG]ZhiMiFanFanAccessory - RotationDirection - setRotationDirection: " + value);
+            that.platform.log.debug("[MiFanPlatform][DEBUG]MiDCVFFanFanAccessory - RotationDirection - setRotationDirection: " + value);
             if(Characteristic.RotationDirection.COUNTER_CLOCKWISE == value) {
                 that.device.call("set_natural_level", [rotationSpeedCharacteristic.value]).then(result => {
-                    that.platform.log.debug("[MiFanPlatform][DEBUG]ZhiMiFanFanAccessory - RotationDirection - setRotationDirection Result: " + result);
+                    that.platform.log.debug("[MiFanPlatform][DEBUG]MiDCVFFanFanAccessory - RotationDirection - setRotationDirection Result: " + result);
                     if(result[0] === "ok") {
                         callback(null);
                     } else {
                         callback(new Error(result[0]));
                     }
                 }).catch(function(err) {
-                    that.platform.log.error("[MiFanPlatform][ERROR]ZhiMiFanFanAccessory - RotationDirection - setRotationDirection Error: " + err);
+                    that.platform.log.error("[MiFanPlatform][ERROR]MiDCVFFanFanAccessory - RotationDirection - setRotationDirection Error: " + err);
                     callback(err);
                 });
             } else {
                 that.device.call("set_speed_level", [rotationSpeedCharacteristic.value]).then(result => {
-                    that.platform.log.debug("[MiFanPlatform][DEBUG]ZhiMiFanFanAccessory - RotationDirection - setRotationDirection Result: " + result);
+                    that.platform.log.debug("[MiFanPlatform][DEBUG]MiDCVFFanFanAccessory - RotationDirection - setRotationDirection Result: " + result);
                     if(result[0] === "ok") {
                         callback(null);
                     } else {
                         callback(new Error(result[0]));
                     }
                 }).catch(function(err) {
-                    that.platform.log.error("[MiFanPlatform][ERROR]ZhiMiFanFanAccessory - RotationDirection - setRotationDirection Error: " + err);
+                    that.platform.log.error("[MiFanPlatform][ERROR]MiDCVFFanFanAccessory - RotationDirection - setRotationDirection Error: " + err);
                     callback(err);
                 });
             }
@@ -198,42 +198,42 @@ ZhiMiFanFanAccessory.prototype.getServices = function() {
     rotationSpeedCharacteristic
         .on('get', function(callback) {
             that.device.call("get_prop", ["natural_level", "speed_level"]).then(result => {
-                that.platform.log.debug("[MiFanPlatform][DEBUG]ZhiMiFanFanAccessory - RotationSpeed - getRotationSpeed: " + result);
+                that.platform.log.debug("[MiFanPlatform][DEBUG]MiDCVFFanFanAccessory - RotationSpeed - getRotationSpeed: " + result);
                 if(result[0] > 0) {
                     callback(null, result[0]);
                 } else {
                     callback(null, result[1]);
                 }
             }).catch(function(err) {
-                that.platform.log.error("[MiFanPlatform][ERROR]ZhiMiFanFanAccessory - RotationSpeed - getRotationSpeed Error: " + err);
+                that.platform.log.error("[MiFanPlatform][ERROR]MiDCVFFanFanAccessory - RotationSpeed - getRotationSpeed Error: " + err);
                 callback(err);
             });
         }.bind(this))
         .on('set', function(value, callback) {
-            that.platform.log.debug("[MiFanPlatform][DEBUG]ZhiMiFanFanAccessory - RotationSpeed - setRotationSpeed: " + value);
+            that.platform.log.debug("[MiFanPlatform][DEBUG]MiDCVFFanFanAccessory - RotationSpeed - setRotationSpeed: " + value);
             if(value > 0) {
                 if(Characteristic.RotationDirection.COUNTER_CLOCKWISE == rotationDirectionCharacteristic.value) {
                     that.device.call("set_natural_level", [value]).then(result => {
-                        that.platform.log.debug("[MiFanPlatform][DEBUG]ZhiMiFanFanAccessory - RotationSpeed - setRotationSpeed Result: " + result);
+                        that.platform.log.debug("[MiFanPlatform][DEBUG]MiDCVFFanFanAccessory - RotationSpeed - setRotationSpeed Result: " + result);
                         if(result[0] === "ok") {
                             callback(null);
                         } else {
                             callback(new Error(result[0]));
                         }
                     }).catch(function(err) {
-                        that.platform.log.error("[MiFanPlatform][ERROR]ZhiMiFanFanAccessory - RotationSpeed - setRotationSpeed Error: " + err);
+                        that.platform.log.error("[MiFanPlatform][ERROR]MiDCVFFanFanAccessory - RotationSpeed - setRotationSpeed Error: " + err);
                         callback(err);
                     });
                 } else {
                     that.device.call("set_speed_level", [value]).then(result => {
-                        that.platform.log.debug("[MiFanPlatform][DEBUG]ZhiMiFanFanAccessory - RotationSpeed - setRotationSpeed Result: " + result);
+                        that.platform.log.debug("[MiFanPlatform][DEBUG]MiDCVFFanFanAccessory - RotationSpeed - setRotationSpeed Result: " + result);
                         if(result[0] === "ok") {
                             callback(null);
                         } else {
                             callback(new Error(result[0]));
                         }
                     }).catch(function(err) {
-                        that.platform.log.error("[MiFanPlatform][ERROR]ZhiMiFanFanAccessory - RotationSpeed - setRotationSpeed Error: " + err);
+                        that.platform.log.error("[MiFanPlatform][ERROR]MiDCVFFanFanAccessory - RotationSpeed - setRotationSpeed Error: " + err);
                         callback(err);
                     });
                 }
@@ -242,20 +242,20 @@ ZhiMiFanFanAccessory.prototype.getServices = function() {
 
     currentTemperatureCharacteristic.on('get', function(callback) {
         this.device.call("get_prop", ["temp_dec"]).then(result => {
-            that.platform.log.debug("[MiFanPlatform][DEBUG]ZhiMiFanFanAccessory - Temperature - getTemperature: " + result);
+            that.platform.log.debug("[MiFanPlatform][DEBUG]MiDCVFFanFanAccessory - Temperature - getTemperature: " + result);
             callback(null, result[0] / 10);
         }).catch(function(err) {
-            that.platform.log.error("[MiFanPlatform][ERROR]ZhiMiFanFanAccessory - Temperature - getTemperature Error: " + err);
+            that.platform.log.error("[MiFanPlatform][ERROR]MiDCVFFanFanAccessory - Temperature - getTemperature Error: " + err);
             callback(err);
         });
     }.bind(this));
         
     currentRelativeHumidityCharacteristic.on('get', function(callback) {
         this.device.call("get_prop", ["humidity"]).then(result => {
-            that.platform.log.debug("[MiFanPlatform][DEBUG]ZhiMiFanFanAccessory - Humidity - getHumidity: " + result);
+            that.platform.log.debug("[MiFanPlatform][DEBUG]MiDCVFFanFanAccessory - Humidity - getHumidity: " + result);
             callback(null, result[0]);
         }).catch(function(err) {
-            that.platform.log.error("[MiFanPlatform][ERROR]ZhiMiFanFanAccessory - Humidity - getHumidity Error: " + err);
+            that.platform.log.error("[MiFanPlatform][ERROR]MiDCVFFanFanAccessory - Humidity - getHumidity Error: " + err);
             callback(err);
         });
     }.bind(this));
@@ -264,13 +264,13 @@ ZhiMiFanFanAccessory.prototype.getServices = function() {
     return services;
 }
 
-ZhiMiFanTemperatureAccessory = function(dThis) {
+MiDCVFFanTemperatureAccessory = function(dThis) {
     this.device = dThis.device;
     this.name = dThis.config['temperatureName'];
     this.platform = dThis.platform;
 }
 
-ZhiMiFanTemperatureAccessory.prototype.getServices = function() {
+MiDCVFFanTemperatureAccessory.prototype.getServices = function() {
     var services = [];
 
     var infoService = new Service.AccessoryInformation();
@@ -289,24 +289,24 @@ ZhiMiFanTemperatureAccessory.prototype.getServices = function() {
     return services;
 }
 
-ZhiMiFanTemperatureAccessory.prototype.getTemperature = function(callback) {
+MiDCVFFanTemperatureAccessory.prototype.getTemperature = function(callback) {
     var that = this;
     this.device.call("get_prop", ["temp_dec"]).then(result => {
-        that.platform.log.debug("[MiFanPlatform][DEBUG]ZhiMiFanTemperatureAccessory - Temperature - getTemperature: " + result);
+        that.platform.log.debug("[MiFanPlatform][DEBUG]MiDCVFFanTemperatureAccessory - Temperature - getTemperature: " + result);
         callback(null, result[0] / 10);
     }).catch(function(err) {
-        that.platform.log.error("[MiFanPlatform][ERROR]ZhiMiFanTemperatureAccessory - Temperature - getTemperature Error: " + err);
+        that.platform.log.error("[MiFanPlatform][ERROR]MiDCVFFanTemperatureAccessory - Temperature - getTemperature Error: " + err);
         callback(err);
     });
 }
 
-ZhiMiFanHumidityAccessory = function(dThis) {
+MiDCVFFanHumidityAccessory = function(dThis) {
     this.device = dThis.device;
     this.name = dThis.config['humidityName'];
     this.platform = dThis.platform;
 }
 
-ZhiMiFanHumidityAccessory.prototype.getServices = function() {
+MiDCVFFanHumidityAccessory.prototype.getServices = function() {
     var services = [];
 
     var infoService = new Service.AccessoryInformation();
@@ -325,24 +325,24 @@ ZhiMiFanHumidityAccessory.prototype.getServices = function() {
     return services;
 }
 
-ZhiMiFanHumidityAccessory.prototype.getHumidity = function(callback) {
+MiDCVFFanHumidityAccessory.prototype.getHumidity = function(callback) {
     var that = this;
     this.device.call("get_prop", ["humidity"]).then(result => {
-        that.platform.log.debug("[MiFanPlatform][DEBUG]ZhiMiFanHumidityAccessory - Humidity - getHumidity: " + result);
+        that.platform.log.debug("[MiFanPlatform][DEBUG]MiDCVFFanHumidityAccessory - Humidity - getHumidity: " + result);
         callback(null, result[0]);
     }).catch(function(err) {
-        that.platform.log.error("[MiFanPlatform][ERROR]ZhiMiFanHumidityAccessory - Humidity - getHumidity Error: " + err);
+        that.platform.log.error("[MiFanPlatform][ERROR]MiDCVFFanHumidityAccessory - Humidity - getHumidity Error: " + err);
         callback(err);
     });
 }
 
-ZhiMiFanBuzzerSwitchAccessory = function(dThis) {
+MiDCVFFanBuzzerSwitchAccessory = function(dThis) {
     this.device = dThis.device;
     this.name = dThis.config['buzzerSwitchName'];
     this.platform = dThis.platform;
 }
 
-ZhiMiFanBuzzerSwitchAccessory.prototype.getServices = function() {
+MiDCVFFanBuzzerSwitchAccessory.prototype.getServices = function() {
     var services = [];
 
     var infoService = new Service.AccessoryInformation();
@@ -362,40 +362,40 @@ ZhiMiFanBuzzerSwitchAccessory.prototype.getServices = function() {
     return services;
 }
 
-ZhiMiFanBuzzerSwitchAccessory.prototype.getBuzzerState = function(callback) {
+MiDCVFFanBuzzerSwitchAccessory.prototype.getBuzzerState = function(callback) {
     var that = this;
     this.device.call("get_prop", ["buzzer"]).then(result => {
-        that.platform.log.debug("[MiFanPlatform][DEBUG]ZhiMiFanBuzzerSwitchAccessory - BuzzerSwitch - getBuzzerState: " + result);
+        that.platform.log.debug("[MiFanPlatform][DEBUG]MiDCVFFanBuzzerSwitchAccessory - BuzzerSwitch - getBuzzerState: " + result);
         callback(null, result[0] === "on" ? 1 : 0);
     }).catch(function(err) {
-        that.platform.log.error("[MiFanPlatform][ERROR]ZhiMiFanBuzzerSwitchAccessory - BuzzerSwitch - getBuzzerState Error: " + err);
+        that.platform.log.error("[MiFanPlatform][ERROR]MiDCVFFanBuzzerSwitchAccessory - BuzzerSwitch - getBuzzerState Error: " + err);
         callback(err);
     });
 }
 
-ZhiMiFanBuzzerSwitchAccessory.prototype.setBuzzerState = function(value, callback) {
+MiDCVFFanBuzzerSwitchAccessory.prototype.setBuzzerState = function(value, callback) {
     var that = this;
-    that.platform.log.debug("[MiFanPlatform][DEBUG]ZhiMiFanLEDBulbAccessory - BuzzerSwitch - setBuzzerState: " + value);
+    that.platform.log.debug("[MiFanPlatform][DEBUG]MiDCVFFanLEDBulbAccessory - BuzzerSwitch - setBuzzerState: " + value);
     that.device.call("set_buzzer", [value ? "on" : "off"]).then(result => {
-        that.platform.log.debug("[MiFanPlatform][DEBUG]ZhiMiFanBuzzerSwitchAccessory - BuzzerSwitch - setBuzzerState Result: " + result);
+        that.platform.log.debug("[MiFanPlatform][DEBUG]MiDCVFFanBuzzerSwitchAccessory - BuzzerSwitch - setBuzzerState Result: " + result);
         if(result[0] === "ok") {
             callback(null);
         } else {
             callback(new Error(result[0]));
         }            
     }).catch(function(err) {
-        that.platform.log.error("[MiFanPlatform][ERROR]ZhiMiFanBuzzerSwitchAccessory - BuzzerSwitch - setBuzzerState Error: " + err);
+        that.platform.log.error("[MiFanPlatform][ERROR]MiDCVFFanBuzzerSwitchAccessory - BuzzerSwitch - setBuzzerState Error: " + err);
         callback(err);
     });
 }
 
-ZhiMiFanLEDBulbAccessory = function(dThis) {
+MiDCVFFanLEDBulbAccessory = function(dThis) {
     this.device = dThis.device;
     this.name = dThis.config['ledBulbName'];
     this.platform = dThis.platform;
 }
 
-ZhiMiFanLEDBulbAccessory.prototype.getServices = function() {
+MiDCVFFanLEDBulbAccessory.prototype.getServices = function() {
     var that = this;
     var services = [];
 
@@ -413,21 +413,21 @@ ZhiMiFanLEDBulbAccessory.prototype.getServices = function() {
     onCharacteristic
         .on('get', function(callback) {
             this.device.call("get_prop", ["led_b"]).then(result => {
-                that.platform.log.debug("[MiFanPlatform][DEBUG]ZhiMiFanLEDBulbAccessory - switchLED - getLEDPower: " + result);
+                that.platform.log.debug("[MiFanPlatform][DEBUG]MiDCVFFanLEDBulbAccessory - switchLED - getLEDPower: " + result);
                 callback(null, result[0] === 2 ? false : true);
             }).catch(function(err) {
-                that.platform.log.error("[MiFanPlatform][ERROR]ZhiMiFanLEDBulbAccessory - switchLED - getLEDPower Error: " + err);
+                that.platform.log.error("[MiFanPlatform][ERROR]MiDCVFFanLEDBulbAccessory - switchLED - getLEDPower Error: " + err);
                 callback(err);
             });
         }.bind(this))
         .on('set', function(value, callback) {
-            that.platform.log.debug("[MiFanPlatform][DEBUG]ZhiMiFanLEDBulbAccessory - switchLED - setLEDPower: " + value + ", nowValue: " + onCharacteristic.value);
+            that.platform.log.debug("[MiFanPlatform][DEBUG]MiDCVFFanLEDBulbAccessory - switchLED - setLEDPower: " + value + ", nowValue: " + onCharacteristic.value);
             that.setLedB(value ? that.getLevelByBrightness(brightnessCharacteristic.value) : 2, callback);
         }.bind(this));
     brightnessCharacteristic
         .on('get', function(callback) {
             this.device.call("get_prop", ["led_b"]).then(result => {
-                that.platform.log.debug("[MiFanPlatform][DEBUG]ZhiMiFanLEDBulbAccessory - switchLED - getLEDPower: " + result);
+                that.platform.log.debug("[MiFanPlatform][DEBUG]MiDCVFFanLEDBulbAccessory - switchLED - getLEDPower: " + result);
                 if(result[0] == 0) {
                     if(brightnessCharacteristic.value > 50 && brightnessCharacteristic.value <= 100) {
                         callback(null, brightnessCharacteristic.value);
@@ -444,7 +444,7 @@ ZhiMiFanLEDBulbAccessory.prototype.getServices = function() {
                     callback(null, 0);
                 }
             }).catch(function(err) {
-                that.platform.log.error("[MiFanPlatform][ERROR]ZhiMiFanLEDBulbAccessory - switchLED - getLEDPower Error: " + err);
+                that.platform.log.error("[MiFanPlatform][ERROR]MiDCVFFanLEDBulbAccessory - switchLED - getLEDPower Error: " + err);
                 callback(err);
             });
         }.bind(this));
@@ -453,23 +453,23 @@ ZhiMiFanLEDBulbAccessory.prototype.getServices = function() {
     return services;
 }
 
-ZhiMiFanLEDBulbAccessory.prototype.setLedB = function(led_b, callback) {
+MiDCVFFanLEDBulbAccessory.prototype.setLedB = function(led_b, callback) {
     var that = this;
-    that.platform.log.debug("[MiFanPlatform][DEBUG]ZhiMiFanLEDBulbAccessory - switchLED - setLedB: " + led_b);
+    that.platform.log.debug("[MiFanPlatform][DEBUG]MiDCVFFanLEDBulbAccessory - switchLED - setLedB: " + led_b);
     this.device.call("set_led_b", [led_b]).then(result => {
-        that.platform.log.debug("[MiFanPlatform][DEBUG]ZhiMiFanLEDBulbAccessory - switchLED - setLEDBrightness Result: " + result);
+        that.platform.log.debug("[MiFanPlatform][DEBUG]MiDCVFFanLEDBulbAccessory - switchLED - setLEDBrightness Result: " + result);
         if(result[0] === "ok") {
             callback(null);
         } else {
             callback(new Error(result[0]));
         }
     }).catch(function(err) {
-        that.platform.log.error("[MiFanPlatform][ERROR]ZhiMiFanLEDBulbAccessory - switchLED - setLEDBrightness Error: " + err);
+        that.platform.log.error("[MiFanPlatform][ERROR]MiDCVFFanLEDBulbAccessory - switchLED - setLEDBrightness Error: " + err);
         callback(err);
     });
 }
 
-ZhiMiFanLEDBulbAccessory.prototype.getLevelByBrightness = function(brightness) {
+MiDCVFFanLEDBulbAccessory.prototype.getLevelByBrightness = function(brightness) {
     if(brightness == 0) {
         return 2;
     } else if(brightness > 0 && brightness <= 50) {
