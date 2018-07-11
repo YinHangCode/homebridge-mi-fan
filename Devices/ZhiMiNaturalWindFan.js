@@ -76,8 +76,6 @@ ZhiMiFWFanFanAccessory.prototype.getServices = function() {
             that.device.call("get_prop", ["power"]).then(result => {
                 that.platform.log.debug("[MiFanPlatform][DEBUG]ZhiMiFWFanFanAccessory - Active - getActive: " + result);
                 callback(null, result[0] === "on" ? Characteristic.Active.ACTIVE : Characteristic.Active.INACTIVE);
-                currentTemperatureCharacteristic.updateValue(33);
-                currentRelativeHumidityCharacteristic.updateValue(44);
             }).catch(function(err) {
                 that.platform.log.error("[MiFanPlatform][ERROR]ZhiMiFWFanFanAccessory - Active - getActive Error: " + err);
                 callback(err);
