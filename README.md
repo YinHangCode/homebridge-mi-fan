@@ -31,6 +31,35 @@ npm install -g homebridge-mi-fan
 "platforms": [{
     "platform": "MiFanPlatform",
     "deviceCfgs": [{
+        "type": "ZhiMiDCVariableFrequencyFan",
+        "ip": "192.168.1.xxx",
+        "token": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+        "fanName": "room fan",
+        "fanDisable": false,
+        "temperatureName": "room temperature",
+        "temperatureDisable": false,
+        "humidityName": "room humidity",
+        "humidityDisable": false,
+        "buzzerSwitchName": "fan buzzer switch",
+        "buzzerSwitchDisable": true,
+        "ledBulbName": "fan led switch",
+        "ledBulbDisable": true
+    }, {
+        "type": "ZhiMiNaturalWindFan",
+        "ip": "192.168.1.xxx",
+        "token": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+        "fanName": "room fan",
+        "fanDisable": false,
+        "temperatureName": "room temperature",
+        "temperatureDisable": false,
+        "humidityName": "room humidity",
+        "humidityDisable": false,
+        "buzzerSwitchName": "fan buzzer switch",
+        "buzzerSwitchDisable": true,
+        "ledBulbName": "fan led switch",
+        "ledBulbDisable": true
+    }, {
+        "type": "MiDCVariableFrequencyFan",
         "ip": "192.168.1.xxx",
         "token": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
         "fanName": "room fan",
