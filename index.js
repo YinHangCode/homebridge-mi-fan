@@ -1,4 +1,5 @@
-require('./Devices/ZhiMiFan');
+require('./Devices/ZhiMiDCVariableFrequencyFan');
+require('./Devices/ZhiMiNaturalWindFan');
 
 var fs = require('fs');
 var packageFile = require("./package.json");
@@ -74,19 +75,23 @@ MiFanPlatform.prototype = {
         if(deviceCfgs instanceof Array) {
             for (var i = 0; i < deviceCfgs.length; i++) {
                 var deviceCfg = deviceCfgs[i];
-//              if(null == deviceCfg['type'] || "" == deviceCfg['type']) {
-//                  continue;
-//              }
+                if(null == deviceCfg['type'] || "" == deviceCfg['type']) {
+                    continue;
+                }
                 if(null == deviceCfg['token'] || "" == deviceCfg['token'] || null == deviceCfg['ip'] || "" == deviceCfg['ip']) {
                     continue;
                 }
                 
-//              if (deviceCfg['type'] == "ZhiMiFan") {
-                    new ZhiMiFan(this, deviceCfg).forEach(function(accessory, index, arr){
+                if (deviceCfg['type'] == "ZhiMiDCVariableFrequencyFan") {
+                    new ZhiMiDCVariableFrequencyFan(this, deviceCfg).forEach(function(accessory, index, arr){
                         myAccessories.push(accessory);
                     });
-//              } else {
-//              }
+                } else if (deviceCfg['type'] == "ZhiMiNaturalWindFan") {
+                    new ZhiMiNaturalWindFan(this, deviceCfg).forEach(function(accessory, index, arr){
+                        myAccessories.push(accessory);
+                    });
+                } else {
+                }
             }
             this.log.info("[MiFanPlatform][INFO]device size: " + deviceCfgs.length + ", accessories size: " + myAccessories.length);
         }

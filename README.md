@@ -7,7 +7,14 @@ Thanks for [nfarina](https://github.com/nfarina)(the author of [homebridge](http
    
 **Note: If you find bugs, please submit them to [issues](https://github.com/YinHangCode/homebridge-mi-fan/issues) or [QQ Group: 107927710](//shang.qq.com/wpa/qunwpa?idkey=8b9566598f40dd68412065ada24184ef72c6bddaa11525ca26c4e1536a8f2a3d).**   
 
-![](https://raw.githubusercontent.com/YinHangCode/homebridge-mi-fan/master/images/Fan.jpg)
+![](https://raw.githubusercontent.com/YinHangCode/homebridge-mi-fan/master/images/ZhiMiDCVariableFrequencyFan.jpg)
+![](https://raw.githubusercontent.com/YinHangCode/homebridge-mi-fan/master/images/ZhiMiNaturalWindFan.jpg)
+![](https://raw.githubusercontent.com/YinHangCode/homebridge-mi-fan/master/images/MiDCVariableFrequencyFan.jpg)
+
+## Supported Devices
+1.ZhiMiDCVariableFrequencyFan(智米直流变频落地扇 799RMB)   
+2.ZhiMiNaturalWindFan(智米自然风风扇 599RMB)   
+3.MiDCVariableFrequencyFan(米家直流变频落地扇 399RMB) ---- coming soon   
 
 ## Pre-Requirements
 1.Make sure your IOS version is ios11 or later.   
@@ -70,6 +77,9 @@ Wait until you get output.
 For more information about token, please refer to [OpenMiHome](https://github.com/OpenMiHome/mihome-binary-protocol) and [miio](https://github.com/aholstenson/miio).   
 
 ## Version Logs
+### 0.1.0 (2018-07-11)
+1.add support for Mi DC VariableFrequency Fan.   
+2.add support for ZhiMi NaturalWind Fan.   
 ### 0.0.5 (2018-02-10)
 1.update 'package.json'.   
 ### 0.0.4 (2017-09-11)
@@ -79,4 +89,4 @@ For more information about token, please refer to [OpenMiHome](https://github.co
 ### 0.0.2 (2017-09-09)
 1.fixed bug that led switch error.   
 ### 0.0.1 (2017-09-05)
-1.support for XiaoMi Fan.   
+1.support for ZhiMi DC VariableFrequency Fan.   

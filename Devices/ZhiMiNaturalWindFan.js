@@ -5,7 +5,7 @@ const miio = require('miio');
 
 var Accessory, PlatformAccessory, Service, Characteristic, UUIDGen;
 
-ZhiMiFan = function(platform, config) {
+ZhiMiNaturalWindFan = function(platform, config) {
     this.init(platform, config);
     
     Accessory = platform.Accessory;
@@ -41,7 +41,7 @@ ZhiMiFan = function(platform, config) {
     
     return accessoriesArr;
 }
-inherits(ZhiMiFan, Base);
+inherits(ZhiMiNaturalWindFan, Base);
 
 ZhiMiFanFanAccessory = function(dThis) {
     this.device = dThis.device;
@@ -56,7 +56,7 @@ ZhiMiFanFanAccessory.prototype.getServices = function() {
     var infoService = new Service.AccessoryInformation();
     infoService
         .setCharacteristic(Characteristic.Manufacturer, "XiaoMi")
-        .setCharacteristic(Characteristic.Model, "ZhiMi Fan")
+        .setCharacteristic(Characteristic.Model, "ZhiMi NW Fan")
         .setCharacteristic(Characteristic.SerialNumber, "Undefined");
     services.push(infoService);
 
@@ -66,6 +66,9 @@ ZhiMiFanFanAccessory.prototype.getServices = function() {
     var swingModeControlsCharacteristic = fanService.addCharacteristic(Characteristic.SwingMode);
     var rotationSpeedCharacteristic = fanService.addCharacteristic(Characteristic.RotationSpeed);
     var rotationDirectionCharacteristic = fanService.addCharacteristic(Characteristic.RotationDirection);
+    
+    var currentTemperatureCharacteristic = fanService.addCharacteristic(Characteristic.CurrentTemperature);
+    var currentRelativeHumidityCharacteristic = fanService.addCharacteristic(Characteristic.CurrentRelativeHumidity);
 
     // power
     activeCharacteristic
@@ -73,6 +76,8 @@ ZhiMiFanFanAccessory.prototype.getServices = function() {
             that.device.call("get_prop", ["power"]).then(result => {
                 that.platform.log.debug("[MiFanPlatform][DEBUG]ZhiMiFanFanAccessory - Active - getActive: " + result);
                 callback(null, result[0] === "on" ? Characteristic.Active.ACTIVE : Characteristic.Active.INACTIVE);
+                currentTemperatureCharacteristic.updateValue(33);
+                currentRelativeHumidityCharacteristic.updateValue(44);
             }).catch(function(err) {
                 that.platform.log.error("[MiFanPlatform][ERROR]ZhiMiFanFanAccessory - Active - getActive Error: " + err);
                 callback(err);
@@ -234,34 +239,27 @@ ZhiMiFanFanAccessory.prototype.getServices = function() {
                 }
             }
         }.bind(this));
-    services.push(fanService);
 
-    var batteryService = new Service.BatteryService();
-    var batLowCharacteristic = batteryService.getCharacteristic(Characteristic.StatusLowBattery);
-    var batLevelCharacteristic = batteryService.getCharacteristic(Characteristic.BatteryLevel);
-    batLevelCharacteristic
-        .on('get', function(callback) {
-            that.device.call("get_prop", ["battery"]).then(result => {
-                that.platform.log.debug("[MiFanPlatform][DEBUG]ZhiMiFanFanAccessory - Battery - getLevel: " + result);
-                batLowCharacteristic.updateValue(result[0] < 20 ? Characteristic.StatusLowBattery.BATTERY_LEVEL_LOW : Characteristic.StatusLowBattery.BATTERY_LEVEL_NORMAL);
-                callback(null, result[0]);
-            }).catch(function(err) {
-                that.platform.log.error("[MiFanPlatform][ERROR]ZhiMiFanFanAccessory - Battery - getLevel Error: " + err);
-                callback(err);
-            });
-        }.bind(this));
-    var batChargingStateCharacteristic = batteryService.getCharacteristic(Characteristic.ChargingState);
-    batChargingStateCharacteristic
-        .on('get', function(callback) {
-            that.device.call("get_prop", ["ac_power"]).then(result => {
-                that.platform.log.debug("[MiFanPlatform][DEBUG]ZhiMiFanFanAccessory - Battery - getChargingState: " + result);
-                callback(null, result[0] === "on" ? Characteristic.ChargingState.CHARGING : Characteristic.ChargingState.NOT_CHARGING);
-            }).catch(function(err) {
-                that.platform.log.error("[MiFanPlatform][ERROR]ZhiMiFanFanAccessory - Battery - getChargingState Error: " + err);
-                callback(err);
-            });
-        }.bind(this));
-    services.push(batteryService);
+    currentTemperatureCharacteristic.on('get', function(callback) {
+        this.device.call("get_prop", ["temp_dec"]).then(result => {
+            that.platform.log.debug("[MiFanPlatform][DEBUG]ZhiMiFanFanAccessory - Temperature - getTemperature: " + result);
+            callback(null, result[0] / 10);
+        }).catch(function(err) {
+            that.platform.log.error("[MiFanPlatform][ERROR]ZhiMiFanFanAccessory - Temperature - getTemperature Error: " + err);
+            callback(err);
+        });
+    }.bind(this));
+        
+    currentRelativeHumidityCharacteristic.on('get', function(callback) {
+        this.device.call("get_prop", ["humidity"]).then(result => {
+            that.platform.log.debug("[MiFanPlatform][DEBUG]ZhiMiFanFanAccessory - Humidity - getHumidity: " + result);
+            callback(null, result[0]);
+        }).catch(function(err) {
+            that.platform.log.error("[MiFanPlatform][ERROR]ZhiMiFanFanAccessory - Humidity - getHumidity Error: " + err);
+            callback(err);
+        });
+    }.bind(this));
+    services.push(fanService);
 
     return services;
 }
@@ -278,7 +276,7 @@ ZhiMiFanTemperatureAccessory.prototype.getServices = function() {
     var infoService = new Service.AccessoryInformation();
     infoService
         .setCharacteristic(Characteristic.Manufacturer, "XiaoMi")
-        .setCharacteristic(Characteristic.Model, "ZhiMi Fan")
+        .setCharacteristic(Characteristic.Model, "ZhiMi NW Fan")
         .setCharacteristic(Characteristic.SerialNumber, "Undefined");
     services.push(infoService);
     
@@ -314,7 +312,7 @@ ZhiMiFanHumidityAccessory.prototype.getServices = function() {
     var infoService = new Service.AccessoryInformation();
     infoService
         .setCharacteristic(Characteristic.Manufacturer, "XiaoMi")
-        .setCharacteristic(Characteristic.Model, "ZhiMi Fan")
+        .setCharacteristic(Characteristic.Model, "ZhiMi NW Fan")
         .setCharacteristic(Characteristic.SerialNumber, "Undefined");
     services.push(infoService);
     
@@ -350,7 +348,7 @@ ZhiMiFanBuzzerSwitchAccessory.prototype.getServices = function() {
     var infoService = new Service.AccessoryInformation();
     infoService
         .setCharacteristic(Characteristic.Manufacturer, "XiaoMi")
-        .setCharacteristic(Characteristic.Model, "ZhiMi Fan")
+        .setCharacteristic(Characteristic.Model, "ZhiMi NW Fan")
         .setCharacteristic(Characteristic.SerialNumber, "Undefined");
     services.push(infoService);
     
@@ -404,7 +402,7 @@ ZhiMiFanLEDBulbAccessory.prototype.getServices = function() {
     var infoService = new Service.AccessoryInformation();
     infoService
         .setCharacteristic(Characteristic.Manufacturer, "XiaoMi")
-        .setCharacteristic(Characteristic.Model, "ZhiMi Fan")
+        .setCharacteristic(Characteristic.Model, "ZhiMi NW Fan")
         .setCharacteristic(Characteristic.SerialNumber, "Undefined");
     services.push(infoService);
 
