@@ -14,7 +14,7 @@ Thanks for [nfarina](https://github.com/nfarina)(the author of [homebridge](http
 ## Supported Devices
 1.ZhiMiDCVariableFrequencyFan(智米直流变频落地扇 799RMB)   
 2.ZhiMiNaturalWindFan(智米自然风风扇 599RMB)   
-3.MiDCVariableFrequencyFan(米家直流变频落地扇 399RMB) ---- coming soon   
+3.MiDCVariableFrequencyFan(米家直流变频落地扇 399RMB)   
 
 ## Pre-Requirements
 1.Make sure your IOS version is ios11 or later.   
