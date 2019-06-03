@@ -24,8 +24,12 @@ DmakerFan = function(platform, config) {
         this.accessories['fanAccessory'] = new DmakerFanAccessory(this);
     }
 	
-    if(!this.config['ledBulbDisable'] && this.config['ledBulbName'] && this.config['ledBulbName'] != "") {
+	if(!this.config['ledBulbDisable'] && this.config['ledBulbName'] && this.config['ledBulbName'] != "") {
         this.accessories['ledBulbAccessory'] = new DmakerFanLEDBulbAccessory(this);
+    }
+	
+	if(!this.config['buzzerSwitchDisable'] && this.config['buzzerSwitchName'] && this.config['buzzerSwitchName'] != "") {
+        this.accessories['buzzerSwitchAccessory'] = new DmakerFanBuzzerSwitchAccessory(this);
     }
 	
     var accessoriesArr = this.obj2array(this.accessories);
@@ -55,7 +59,7 @@ DmakerFanAccessory.prototype.getServices = function() {
 
     var fanService = new Service.Fanv2(this.name);
     var activeCharacteristic = fanService.getCharacteristic(Characteristic.Active);
-    //var lockPhysicalControlsCharacteristic = fanService.addCharacteristic(Characteristic.LockPhysicalControls);
+    var lockPhysicalControlsCharacteristic = fanService.addCharacteristic(Characteristic.LockPhysicalControls);
     var swingModeControlsCharacteristic = fanService.addCharacteristic(Characteristic.SwingMode);
     var rotationSpeedCharacteristic = fanService.addCharacteristic(Characteristic.RotationSpeed);
     var rotationDirectionCharacteristic = fanService.addCharacteristic(Characteristic.RotationDirection);
@@ -65,10 +69,10 @@ DmakerFanAccessory.prototype.getServices = function() {
             that.device.call("get_prop", ["all"]).then(result => {
                 that.platform.log.debug("[MiFanPlatform][DEBUG]DmakerFanAccessory - Active - getActive: " + result);
                 if (result[0] === true) {
-		    callback(null, Characteristic.Active.ACTIVE);
-		} else {
-		    callback(null, Characteristic.Active.INACTIVE);
-		}
+					callback(null, Characteristic.Active.ACTIVE);
+				} else {
+					callback(null, Characteristic.Active.INACTIVE);
+				}
             }).catch(function(err) {
                 that.platform.log.error("[MiFanPlatform][ERROR]DmakerFanAccessory - Active - getActive Error: " + err);
                 callback(err);
@@ -76,163 +80,134 @@ DmakerFanAccessory.prototype.getServices = function() {
         }.bind(this))
         .on('set', function(value, callback) {
             that.platform.log.debug("[MiFanPlatform][DEBUG]DmakerFanAccessory - Active - setActive: " + value);
-		if (Characteristic.Active.ACTIVE === value) {
-		    that.device.call("s_power", ["true"]).then(result => {
-		    that.platform.log.debug("[MiFanPlatform][DEBUG]DmakerFanAccessory - Active - setActive Result: " + result);
+				that.device.call("s_power", [value ? "true" : "false"]).then(result => {
+					 that.platform.log.debug("[MiFanPlatform][DEBUG]DmakerFanAccessory - Active - setActive Result: " + result);
                         if(result[0] === "ok") {
                             callback(null);
-			    setTimeout(() => {
-				activeCharacteristic.updateValue(1);
-                            }, 10);
+							
                         } else {
                             callback(new Error(result[0]));
                         }
-		    }).catch(function(err) {
-			that.platform.log.error("[MiFanPlatform][ERROR]DmakerFanAccessory - Active - setActive Error: " + err);
+					}).catch(function(err) {
+						that.platform.log.error("[MiFanPlatform][ERROR]DmakerFanAccessory - Active - setActive Error: " + err);
                         callback(err);
+				    });
+			}.bind(this));
+			
+	lockPhysicalControlsCharacteristic
+	    .on('get', function(callback) {
+            that.device.call("get_prop", ["all"]).then(result => {
+                that.platform.log.debug("[MiFanPlatform][DEBUG]DmakerFanAccessory - LockPhysicalControls - getLockPhysicalControls: " + result);
+                if (result[8] === true) {
+					callback(null, Characteristic.LockPhysicalControls.CONTROL_LOCK_ENABLED);
+				} else {
+					callback(null, Characteristic.LockPhysicalControls.CONTROL_LOCK_DISABLED);
+				}
+            }).catch(function(err) {
+                that.platform.log.error("[MiFanPlatform][ERROR]DmakerFanAccessory - LockPhysicalControls - getLockPhysicalControls Error: " + err);
+                callback(err);
+            });
+        }.bind(this))
+		.on('set', function(value, callback) {
+			that.platform.log.debug("[MiFanPlatform][DEBUG]DmakerFanAccessory - LockPhysicalControls - setLockPhysicalControls: " + value);
+			that.device.call("s_lock", [value ? "true" : "false"]).then(result => {
+				that.platform.log.debug("[MiFanPlatform][DEBUG]DmakerFanAccessory - LockPhysicalControls - setLockPhysicalControls Result: " + result);
+                if(result[0] === "ok") {
+                    callback(null);
+					
+                } else {
+                    callback(new Error(result[0]));
+                }
+			}).catch(function(err) {
+				that.platform.log.error("[MiFanPlatform][ERROR]DmakerFanAccessory - LockPhysicalControls - setLockPhysicalControls Error: " + err);
+                callback(err);
 		    });
-	         } else {
-                    that.device.call("s_power", ["false"]).then(result => {
-			that.platform.log.debug("[MiFanPlatform][DEBUG]DmakerFanAccessory - Active - setActive Result: " + result);
-                        if(result[0] === "ok") {
-                            callback(null);
-			    setTimeout(() => {
-				activeCharacteristic.updateValue(0);
-                            }, 10);
-                        } else {
-                            callback(new Error(result[0]));
-                        }
-		     }).catch(function(err) {
-			that.platform.log.error("[MiFanPlatform][ERROR]DmakerFanAccessory - Active - setActive Error: " + err);
-                        callback(err);
-                    });
-		}
-	}.bind(this));
+		}.bind(this));
         
     // angle_enable
     swingModeControlsCharacteristic
-        .on('get', function(callback) {
-	    that.device.call("get_prop", ["all"]).then(result => {
-		that.platform.log.debug("[MiFanPlatform][DEBUG]DmakerFanAccessory - SwingMode - getSwingModeControls: " + result);
-		if (result[3] === true) {
-			callback(null, Characteristic.SwingMode.SWING_ENABLED);
-		} else {
-			callback(null, Characteristic.SwingMode.SWING_DISABLED);
-		}
-	    }).catch(function(err) {
-	        that.platform.log.error("[MiFanPlatform][ERROR]DmakerFanAccessory - SwingMode - getSwingModeControls Error: " + err);
+	    .on('get', function(callback) {
+			that.device.call("get_prop", ["all"]).then(result => {
+				that.platform.log.debug("[MiFanPlatform][DEBUG]DmakerFanAccessory - SwingMode - getSwingModeControls: " + result);
+				if (result[3] === true) {
+					callback(null, Characteristic.SwingMode.SWING_ENABLED);
+				} else {
+					callback(null, Characteristic.SwingMode.SWING_DISABLED);
+				}
+			}).catch(function(err) {
+			    that.platform.log.error("[MiFanPlatform][ERROR]DmakerFanAccessory - SwingMode - getSwingModeControls Error: " + err);
                 callback(err);
             });
-         }.bind(this))
-         .on('set', function(value, callback) {	
-		that.platform.log.debug("[MiFanPlatform][DEBUG]DmakerFanAccessory - SwingMode - setSwingModeControls: " + value);
-                if (Characteristic.SwingMode.SWING_ENABLED === value) {
-		    that.device.call("s_roll", ["true"]).then(result => {
-		        that.platform.log.debug("[MiFanPlatform][DEBUG]DmakerFanAccessory - SwingMode - setSwingModeControls Result: " + result);
-                        if(result[0] === "ok") {
-                            callback(null);
-			    setTimeout(() => {
-				swingModeControlsCharacteristic.updateValue(Characteristic.SwingMode.SWING_ENABLED);
-                             }, 10);
-                        } else {
-                            callback(new Error(result[0]));
-                        }
-		    }).catch(function(err) {
-			that.platform.log.error("[MiFanPlatform][ERROR]DmakerFanAccessory - SwingMode - setSwingModeControls Error: " + err);
-                        callback(err);
+        }.bind(this))
+        .on('set', function(value, callback) {	
+		    that.platform.log.debug("[MiFanPlatform][DEBUG]DmakerFanAccessory - SwingMode - setSwingModeControls: " + value);
+			that.device.call("s_roll", [value ? "true" : "false"]).then(result => {
+				that.platform.log.debug("[MiFanPlatform][DEBUG]DmakerFanAccessory - SwingMode - setSwingModeControls Result: " + result);
+                if(result[0] === "ok") {
+                    callback(null);
+                } else {
+                     callback(new Error(result[0]));
+                }
+			 }).catch(function(err) {
+			    that.platform.log.error("[MiFanPlatform][ERROR]DmakerFanAccessory - SwingMode - setSwingModeControls Error: " + err);
+                callback(err);
 		    });
-		 } else {
-                    that.device.call("s_roll", ["false"]).then(result => {
-			that.platform.log.debug("[MiFanPlatform][DEBUG]DmakerFanAccessory - SwingMode - setSwingModeControls Result: " + result);
-                        if(result[0] === "ok") {
-                            callback(null);
-			    setTimeout(() => {
-				swingModeControlsCharacteristic.updateValue(Characteristic.SwingMode.SWING_DISABLED);
-                            }, 10);
-                        } else {
-                            callback(new Error(result[0]));
-                        }
-		    }).catch(function(err) {
-			that.platform.log.error("[MiFanPlatform][ERROR]DmakerFanAccessory - SwingMode - setSwingModeControls Error: " + err);
-                        callback(err);
-                    });
-		}
-	    }.bind(this));
+        }.bind(this));
 
     
     rotationSpeedCharacteristic
         .on('get', function(callback) {
-	    that.device.call("get_prop", ["all"]).then(result => {
-	        that.platform.log.debug("[MiFanPlatform][DEBUG]DmakerFanAccessory - RotationSpeed - getRotationSpeed: " + result);
-		callback(null, result[2]);
-	      }).catch(function(err) {
+				that.device.call("get_prop", ["all"]).then(result => {
+			    that.platform.log.debug("[MiFanPlatform][DEBUG]DmakerFanAccessory - RotationSpeed - getRotationSpeed: " + result);
+					callback(null, result[2]);
+				}).catch(function(err) {
                 that.platform.log.error("[MiFanPlatform][ERROR]DmakerFanAccessory - RotationSpeed - getRotationSpeed Error: " + err);  
                 callback(err);
             });
-	}.bind(this))
+		}.bind(this))
         .on('set', function(value, callback) {
-	    that.platform.log.debug("[MiFanPlatform][DEBUG]DmakerFanAccessory - RotationSpeed - setRotationSpeed: " + value);
-	    that.device.call("s_speed", [value]).then(result => {
-		that.platform.log.debug("[MiFanPlatform][DEBUG]DmakerFanAccessory - RotationSpeed - setRotationSpeed Result: " + result);
-		if(result[0] === "ok") {
+			that.platform.log.debug("[MiFanPlatform][DEBUG]DmakerFanAccessory - RotationSpeed - setRotationSpeed: " + value);
+			that.device.call("s_speed", [value]).then(result => {
+				that.platform.log.debug("[MiFanPlatform][DEBUG]DmakerFanAccessory - RotationSpeed - setRotationSpeed Result: " + result);
+				if(result[0] === "ok") {
                     callback(null);
-	        } else {
+			    } else {
                     callback(new Error(result[0]));
                 }
-	     }).catch(function(err) {
-		that.platform.log.error("[MiFanPlatform][ERROR]DmakerFanAccessory - RotationSpeed - setRotationSpeed Error: " + err);
+		    }).catch(function(err) {
+				that.platform.log.error("[MiFanPlatform][ERROR]DmakerFanAccessory - RotationSpeed - setRotationSpeed Error: " + err);
                 callback(err);
             });
-	}.bind(this));
+		}.bind(this));
     
 	rotationDirectionCharacteristic
-	    .on('get', function(callback) {
-		that.device.call("get_prop", ["all"]).then(result => {
-		    that.platform.log.debug("[MiFanPlatform][DEBUG]DmakerFanAccessory - RotationDirection - getRotationDirection: " + result);
-	            if (result[1] === "normal") {
-			callback(null, Characteristic.RotationDirection.CLOCKWISE);
-		    } else {
-			 callback(null, Characteristic.RotationDirection.COUNTER_CLOCKWISE);
-		     }
-		 }).catch(function(err) {
-	           that.platform.log.error("[MiFanPlatform][ERROR]DmakerFanAccessory - RotationDirection - getRotationDirection Error: " + err);
-                   callback(err);
-                });
-             }.bind(this))
-	     .on('set', function(value, callback) {
-		 that.platform.log.debug("[MiFanPlatform][DEBUG]DmakerFanAccessory - RotationDirection - setRotationDirection: " + value);
-		 if (Characteristic.RotationDirection.CLOCKWISE === value) {
-			that.device.call("s_mode", ["normal"]).then(result => {
-			that.platform.log.debug("[MiFanPlatform][DEBUG]DmakerFanAccessory - RotationDirection - setRotationDirection Result: " + result);
-                            if(result[0] === "ok") {
-                                callback(null);
-				setTimeout(() => {
-				    rotationDirectionCharacteristic.updateValue(Characteristic.RotationDirection.CLOCKWISE);
-                                }, 10);
-                             } else {
-                                callback(new Error(result[0]));
-                             }
-			 }).catch(function(err) {
-			    that.platform.log.error("[MiFanPlatform][ERROR]DmakerFanAccessory - RotationDirection - setRotationDirection Error: " + err);
-                            callback(err);
-			 });
-		  } else {
-                     that.device.call("s_mode", ["nature"]).then(result => {
-			that.platform.log.debug("[MiFanPlatform][DEBUG]DmakerFanAccessory - RotationDirection - setRotationDirection Result: " + result);
-                        if(result[0] === "ok") {
-                             callback(null);
-			     setTimeout(() => {
-				 rotationDirectionCharacteristic.updateValue(Characteristic.RotationDirection.COUNTER_CLOCKWISE);
-                             }, 10);
-                        } else {
-                            callback(new Error(result[0]));
-                        }
-		    }).catch(function(err) {
-			that.platform.log.error("[MiFanPlatform][ERROR]DmakerFanAccessory - RotationDirection - setRotationDirection Error: " + err);
-                        callback(err);
-                    });
-		}
-	}.bind(this));
+		.on('get', function(callback) {
+		    that.device.call("get_prop", ["all"]).then(result => {
+				that.platform.log.debug("[MiFanPlatform][DEBUG]DmakerFanAccessory - RotationDirection - getRotationDirection: " + result);
+			    if (result[1] === "normal") {
+					callback(null, Characteristic.RotationDirection.CLOCKWISE);
+				} else {
+					callback(null, Characteristic.RotationDirection.COUNTER_CLOCKWISE);
+				}
+			}).catch(function(err) {
+			    that.platform.log.error("[MiFanPlatform][ERROR]DmakerFanAccessory - RotationDirection - getRotationDirection Error: " + err);
+                callback(err);
+            });
+        }.bind(this))
+		.on('set', function(value, callback) {
+			that.platform.log.debug("[MiFanPlatform][DEBUG]DmakerFanAccessory - RotationDirection - setRotationDirection: " + value);
+				that.device.call("s_mode", [value ? "normal" : "nature"]).then(result => {
+					that.platform.log.debug("[MiFanPlatform][DEBUG]DmakerFanAccessory - RotationDirection - setRotationDirection Result: " + result);
+                    if(result[0] === "ok") {
+                        callback(null);
+                    } else {
+                        callback(new Error(result[0]));
+                    }
+			    }).catch(function(err) {
+					that.platform.log.error("[MiFanPlatform][ERROR]DmakerFanAccessory - RotationDirection - setRotationDirection Error: " + err);
+                    callback(err);
+			    });
+		}.bind(this));
     
     services.push(fanService);
 
@@ -296,5 +271,60 @@ DmakerFanLEDBulbAccessory.prototype.setLEDBulbState = function(value, callback) 
     });
 }
 
+DmakerFanBuzzerSwitchAccessory = function(dThis) {
+    this.device = dThis.device;
+    this.name = dThis.config['buzzerSwitchName'];
+    this.platform = dThis.platform;
+}
 
+DmakerFanBuzzerSwitchAccessory.prototype.getServices = function() {
+    var services = [];
+
+    var infoService = new Service.AccessoryInformation();
+    infoService
+        .setCharacteristic(Characteristic.Manufacturer, "XiaoMi")
+        .setCharacteristic(Characteristic.Model, "DmakerFan")
+        .setCharacteristic(Characteristic.SerialNumber, "Undefined");
+    services.push(infoService);
+    
+    var switchService = new Service.Switch(this.name);
+    switchService
+        .getCharacteristic(Characteristic.On)
+        .on('get', this.getBuzzerState.bind(this))
+        .on('set', this.setBuzzerState.bind(this));
+    services.push(switchService);
+
+    return services;
+}
+
+DmakerFanBuzzerSwitchAccessory.prototype.getBuzzerState = function(callback) {
+    var that = this;
+    this.device.call("get_prop", ["all"]).then(result => {
+        that.platform.log.debug("[MiFanPlatform][DEBUG]DmakerFanBuzzerSwitchAccessory - BuzzerSwitch - getBuzzerState: " + result);
+        if (result[7] === true) {
+			callback(null, true);
+		} else {
+			callback(null, false);
+		}
+    }).catch(function(err) {
+        that.platform.log.error("[MiFanPlatform][ERROR]DmakerFanBuzzerSwitchAccessory - BuzzerSwitch - getBuzzerState Error: " + err);
+        callback(err);
+    });
+}
+
+DmakerFanBuzzerSwitchAccessory.prototype.setBuzzerState = function(value, callback) {
+    var that = this;
+    that.platform.log.debug("[MiFanPlatform][DEBUG]DmakerFanBuzzerSwitchAccessory - BuzzerSwitch - setBuzzerState: " + value);
+    that.device.call("s_sound", [value ? "true" : "false"]).then(result => {
+        that.platform.log.debug("[MiFanPlatform][DEBUG]DmakerFanBuzzerSwitchAccessory - BuzzerSwitch - setBuzzerState Result: " + result);
+        if(result[0] === "ok") {
+            callback(null);
+        } else {
+            callback(new Error(result[0]));
+        }            
+    }).catch(function(err) {
+        that.platform.log.error("[MiFanPlatform][ERROR]DmakerFanBuzzerSwitchAccessory - BuzzerSwitch - setBuzzerState Error: " + err);
+        callback(err);
+    });
+}
 
