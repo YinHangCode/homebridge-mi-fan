@@ -81,6 +81,8 @@ npm install -g homebridge-mi-fan
         "token": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
         "fanName": "room fan",
         "fanDisable": false,
+        "buzzerSwitchName": "fan buzzer switch",
+        "buzzerSwitchDisable": true,
         "ledBulbName": "fan led switch",
         "ledBulbDisable": true
     }]
