@@ -12,6 +12,7 @@ Thanks for [nfarina](https://github.com/nfarina)(the author of [homebridge](http
 ![](https://raw.githubusercontent.com/YinHangCode/homebridge-mi-fan/master/images/MiDCVariableFrequencyFan.jpg)
 ![](https://raw.githubusercontent.com/YinHangCode/homebridge-mi-fan/master/images/DmakerFan.jpg)
 
+
 ## Supported Devices
 1.ZhiMiDCVariableFrequencyFan(智米直流变频落地扇 799RMB)   
 2.ZhiMiNaturalWindFan(智米自然风风扇 599RMB)   
