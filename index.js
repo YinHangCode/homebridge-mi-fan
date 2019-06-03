@@ -3,6 +3,7 @@ require('./Devices/ZhiMiNaturalWindFan');
 require('./Devices/MiDCVariableFrequencyFan');
 require('./Devices/DmakerFan');
 
+
 var fs = require('fs');
 var packageFile = require("./package.json");
 var PlatformAccessory, Accessory, Service, Characteristic, UUIDGen;
