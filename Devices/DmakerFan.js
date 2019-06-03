@@ -24,7 +24,7 @@ DmakerFan = function(platform, config) {
         this.accessories['fanAccessory'] = new DmakerFanAccessory(this);
     }
 	
-	if(!this.config['ledBulbDisable'] && this.config['ledBulbName'] && this.config['ledBulbName'] != "") {
+    if(!this.config['ledBulbDisable'] && this.config['ledBulbName'] && this.config['ledBulbName'] != "") {
         this.accessories['ledBulbAccessory'] = new DmakerFanLEDBulbAccessory(this);
     }
 	
