@@ -101,7 +101,7 @@ MiFanPlatform.prototype = {
                     new DmakerFan(this, deviceCfg).forEach(function(accessory, index, arr){
                         myAccessories.push(accessory);
                     });
-			    } else {
+	        } else {
                 }
             }
             this.log.info("[MiFanPlatform][INFO]device size: " + deviceCfgs.length + ", accessories size: " + myAccessories.length);
