@@ -3,7 +3,6 @@ require('./Devices/ZhiMiNaturalWindFan');
 require('./Devices/MiDCVariableFrequencyFan');
 require('./Devices/DmakerFan');
 
-
 var fs = require('fs');
 var packageFile = require("./package.json");
 var PlatformAccessory, Accessory, Service, Characteristic, UUIDGen;
@@ -102,7 +101,7 @@ MiFanPlatform.prototype = {
                         myAccessories.push(accessory);
                     });
                 } else {
-		        }
+                }
             }
             this.log.info("[MiFanPlatform][INFO]device size: " + deviceCfgs.length + ", accessories size: " + myAccessories.length);
         }
