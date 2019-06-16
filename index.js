@@ -102,7 +102,7 @@ MiFanPlatform.prototype = {
                         myAccessories.push(accessory);
                     });
 	        } else {
-                }
+		}
             }
             this.log.info("[MiFanPlatform][INFO]device size: " + deviceCfgs.length + ", accessories size: " + myAccessories.length);
         }
