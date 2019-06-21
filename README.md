@@ -3,7 +3,7 @@
 
 XiaoMi fan plugins for HomeBridge.   
    
-Thanks for [nfarina](https://github.com/nfarina)(the author of [homebridge](https://github.com/nfarina/homebridge)), [OpenMiHome](https://github.com/OpenMiHome/mihome-binary-protocol), [aholstenson](https://github.com/aholstenson)(the author of [miio](https://github.com/aholstenson/miio)), 小马哥, all other developer and testers.   
+Thanks for [nfarina](https://github.com/nfarina)(the author of [homebridge](https://github.com/nfarina/homebridge)), [OpenMiHome](https://github.com/OpenMiHome/mihome-binary-protocol), [aholstenson](https://github.com/aholstenson)(the author of [miio](https://github.com/aholstenson/miio)), [ABC](https://github.com/hassbian-ABC), 小马哥, all other developer and testers.   
    
 **Note: If you find bugs, please submit them to [issues](https://github.com/YinHangCode/homebridge-mi-fan/issues) or [QQ Group: 107927710](//shang.qq.com/wpa/qunwpa?idkey=8b9566598f40dd68412065ada24184ef72c6bddaa11525ca26c4e1536a8f2a3d).**   
 
@@ -120,7 +120,7 @@ For more information about token, please refer to [OpenMiHome](https://github.co
 
 ## Version Logs
 ### 0.1.1 (2019-06-03)
-1.add support for DmakerFan
+1.add support for DmakerFan.
 ### 0.1.0 (2018-07-11)
 1.add support for Mi DC VariableFrequency Fan.   
 2.add support for ZhiMi NaturalWind Fan.   
