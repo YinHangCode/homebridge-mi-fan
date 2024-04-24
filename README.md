@@ -4,8 +4,11 @@
 XiaoMi fan plugins for HomeBridge.   
    
 Thanks for [nfarina](https://github.com/nfarina)(the author of [homebridge](https://github.com/nfarina/homebridge)), [OpenMiHome](https://github.com/OpenMiHome/mihome-binary-protocol), [aholstenson](https://github.com/aholstenson)(the author of [miio](https://github.com/aholstenson/miio)), [ABC](https://github.com/hassbian-ABC), 小马哥, all other developer and testers.   
-   
-**Note: If you find bugs, please submit them to [issues](https://github.com/YinHangCode/homebridge-mi-fan/issues) or [QQ Group: 107927710](//shang.qq.com/wpa/qunwpa?idkey=8b9566598f40dd68412065ada24184ef72c6bddaa11525ca26c4e1536a8f2a3d).**   
+
+**Note: If you find bugs, please submit them to [issues](https://github.com/YinHangCode/homebridge-mi-fan/issues) or
+QQ Group: [245480](http://qm.qq.com/cgi-bin/qm/qr?_wv=1027&k=gZitewfJ7tC8UBPco-vHE-lWlQ2MSFj4&authKey=vM9HTpEBVpb6vVIHtwnRxFdsUKN0dh1A%2FUihq0BnOtLzEykzEaBZVQjbYINWucxd&noverify=0&group_code=245480)
+(~~previous [15987618](https://qm.qq.com/cgi-bin/qm/qr?k=ZiAkKhlOCyjpSq94Xb6-MsiKCxLtoDAJ&jump_from=webapi)~~)
+(~~previous [107927710](//shang.qq.com/wpa/qunwpa?idkey=8b9566598f40dd68412065ada24184ef72c6bddaa11525ca26c4e1536a8f2a3d)~~).**
 
 ![](https://raw.githubusercontent.com/YinHangCode/homebridge-mi-fan/master/images/ZhiMiDCVariableFrequencyFan.jpg)
 ![](https://raw.githubusercontent.com/YinHangCode/homebridge-mi-fan/master/images/ZhiMiNaturalWindFan.jpg)
@@ -13,11 +16,14 @@ Thanks for [nfarina](https://github.com/nfarina)(the author of [homebridge](http
 ![](https://raw.githubusercontent.com/YinHangCode/homebridge-mi-fan/master/images/DmakerFan.jpg)
 
 
+
 ## Supported Devices
 1.ZhiMiDCVariableFrequencyFan(智米直流变频落地扇 799RMB)   
 2.ZhiMiNaturalWindFan(智米自然风风扇 599RMB)   
 3.MiDCVariableFrequencyFan(米家直流变频落地扇 399RMB)   
-4.DmakerFan(米家风扇1X 299RMB)
+4.DmakerFan(米家风扇1X 299RMB)  
+5.DmakerFanp5c(新款米家智能直流变频落地扇1X)
+
 
 ## Pre-Requirements
 1.Make sure your IOS version is ios11 or later.   
@@ -85,6 +91,18 @@ npm install -g homebridge-mi-fan
         "buzzerSwitchDisable": true,
         "ledBulbName": "fan led switch",
         "ledBulbDisable": true
+    },
+    {
+        "type": "DmakerFanP5c",
+        "ip": "192.168.1.xxx",
+        "token": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+        "deviceId":"xxxxxxx",
+        "fanName": "room fan",
+        "fanDisable": false,
+        "buzzerSwitchName": "fan buzzer switch",
+        "buzzerSwitchDisable": true,
+        "ledBulbName": "fan led switch",
+        "ledBulbDisable": true
     }]
 }]
 ```
@@ -119,6 +137,8 @@ Wait until you get output.
 For more information about token, please refer to [OpenMiHome](https://github.com/OpenMiHome/mihome-binary-protocol) and [miio](https://github.com/aholstenson/miio).   
 
 ## Version Logs
+### 0.1.2 (2024-04-24)
+1.add support for DmakerFanP5c.
 ### 0.1.1 (2019-06-03)
 1.add support for DmakerFan.
 ### 0.1.0 (2018-07-11)
