@@ -10,13 +10,20 @@ QQ Group: [245480](http://qm.qq.com/cgi-bin/qm/qr?_wv=1027&k=gZitewfJ7tC8UBPco-v
 (~~previous [15987618](https://qm.qq.com/cgi-bin/qm/qr?k=ZiAkKhlOCyjpSq94Xb6-MsiKCxLtoDAJ&jump_from=webapi)~~)
 (~~previous [107927710](//shang.qq.com/wpa/qunwpa?idkey=8b9566598f40dd68412065ada24184ef72c6bddaa11525ca26c4e1536a8f2a3d)~~).**
 
+![](https://raw.githubusercontent.com/YinHangCode/homebridge-mi-fan/master/images/ZhiMiDCVariableFrequencyFan.jpg)
+![](https://raw.githubusercontent.com/YinHangCode/homebridge-mi-fan/master/images/ZhiMiNaturalWindFan.jpg)
+![](https://raw.githubusercontent.com/YinHangCode/homebridge-mi-fan/master/images/MiDCVariableFrequencyFan.jpg)
+![](https://raw.githubusercontent.com/YinHangCode/homebridge-mi-fan/master/images/DmakerFan.jpg)
+
+
 
 ## Supported Devices
 1.ZhiMiDCVariableFrequencyFan(智米直流变频落地扇 799RMB)   
 2.ZhiMiNaturalWindFan(智米自然风风扇 599RMB)   
 3.MiDCVariableFrequencyFan(米家直流变频落地扇 399RMB)   
-4.DmakerFan(米家风扇1X 299RMB)
+4.DmakerFan(米家风扇1X 299RMB)  
 5.DmakerFanp5c(新款米家智能直流变频落地扇1X)
+
 
 ## Pre-Requirements
 1.Make sure your IOS version is ios11 or later.   
