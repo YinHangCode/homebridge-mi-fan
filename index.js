@@ -2,6 +2,7 @@ require('./Devices/ZhiMiDCVariableFrequencyFan');
 require('./Devices/ZhiMiNaturalWindFan');
 require('./Devices/MiDCVariableFrequencyFan');
 require('./Devices/DmakerFan');
+require('./Devices/DmakerFanP5c');
 
 var fs = require('fs');
 var packageFile = require("./package.json");
@@ -98,6 +99,10 @@ MiFanPlatform.prototype = {
                     });
                 } else if (deviceCfg['type'] == "DmakerFan") {
                     new DmakerFan(this, deviceCfg).forEach(function(accessory, index, arr){
+                        myAccessories.push(accessory);
+                    });
+                } else if(deviceCfg['type'] == "DmakerFanP5c"){
+                    new DmakerFanP5c(this, deviceCfg).forEach(function(accessory, index, arr){
                         myAccessories.push(accessory);
                     });
                 } else {

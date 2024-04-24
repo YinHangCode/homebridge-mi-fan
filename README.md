@@ -85,6 +85,18 @@ npm install -g homebridge-mi-fan
         "buzzerSwitchDisable": true,
         "ledBulbName": "fan led switch",
         "ledBulbDisable": true
+    },
+    {
+        "type": "DmakerFanP5c",
+        "ip": "192.168.1.xxx",
+        "token": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+        "deviceId":"xxxxxxx",
+        "fanName": "room fan",
+        "fanDisable": false,
+        "buzzerSwitchName": "fan buzzer switch",
+        "buzzerSwitchDisable": true,
+        "ledBulbName": "fan led switch",
+        "ledBulbDisable": true
     }]
 }]
 ```
