@@ -18,6 +18,7 @@ Thanks for [nfarina](https://github.com/nfarina)(the author of [homebridge](http
 2.ZhiMiNaturalWindFan(智米自然风风扇 599RMB)   
 3.MiDCVariableFrequencyFan(米家直流变频落地扇 399RMB)   
 4.DmakerFan(米家风扇1X 299RMB)
+5.DmakerFanp5c(新款米家智能直流变频落地扇1X)
 
 ## Pre-Requirements
 1.Make sure your IOS version is ios11 or later.   
@@ -131,6 +132,8 @@ Wait until you get output.
 For more information about token, please refer to [OpenMiHome](https://github.com/OpenMiHome/mihome-binary-protocol) and [miio](https://github.com/aholstenson/miio).   
 
 ## Version Logs
+### 0.1.2 (2024-04-24)
+1.add support for DmakerFanP5c.
 ### 0.1.1 (2019-06-03)
 1.add support for DmakerFan.
 ### 0.1.0 (2018-07-11)
