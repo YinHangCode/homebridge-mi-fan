@@ -1,30 +1,84 @@
 const miio = require('miio')
-const {debounceWithIndividualTimeout, buildCommandArgs} = require('../utils/Utils')
 
 class MiotDevice {
-    constructor(address, token, deviceId, debounce) {
+    setMethod = "set_properties";
+    getMethod = "get_properties";
+
+    constructor(address, token, debounce, log, deviceId, wait) {
         this.device = new miio.Device({address: address, token: token});
         this.deviceId = deviceId;
         this.debounce = debounce;
+        this.log = log || console;
         if (debounce) {
-            this.sendCommandDebounced = debounceWithIndividualTimeout(this.sendCommand, 50);
+            this.sendCommandDebounced = this.debounceWithIndividualTimeout(this.sendCommand, wait || 50);
         }
     }
+
 
     setProperties(siid, piid, value) {
+        let execute;
         if (this.debounce) {
-            this.sendCommandDebounced(siid, piid, value);
+            execute = this.sendCommandDebounced(this.setMethod, siid, piid, value)
         } else {
-            this.sendCommand(siid, piid, value);
+            execute = this.sendCommand(this.setMethod, siid, piid, value)
         }
+        execute.then(result => {
+            this.log.debug(`[MiFanPlatform][DEBUG]DmakerFanP5c ====>result:` + JSON.stringify(result[0]));
+        }).catch(err => {
+            this.log.error(`[MiFanPlatform][DEBUG]DmakerFanP5c ====>err:` + err);
+        });
     }
 
-    sendCommandDebounced = debounceWithIndividualTimeout(this.sendCommand, 50);
+    getProperties(siid, piid) {
+        return this.sendCommand(this.getMethod, siid, piid);
+    }
 
-    sendCommand(siid, piid, value) {
-        this.device.call('set_properties', buildCommandArgs(this.deviceId, siid, piid, value)).then(res => {
-            console.log(res);
-        });
+
+    sendCommand(method, siid, piid, value) {
+        return this.device.call(method, this.buildCommandArgs(siid, piid, value))
+    }
+
+    buildCommandArgs(siid, piid, value) {
+        let args = {'siid': siid, 'piid': piid}
+        if (this.deviceId) {
+            args['did'] = this.deviceId;
+        }
+        if (value != null) {
+            args['value'] = value;
+        }
+        return [args];
+    }
+
+    debounceWithIndividualTimeout(func, wait) {
+        const timeoutsMap = new Map();
+
+        function debounced(...args) {
+            const key = args[0] + '-' + args[1] + '-' + args[1];
+
+            const existingTimeoutId = timeoutsMap.get(key);
+            if (existingTimeoutId) {
+                this.log.debug('[MiFanPlatform][DEBUG]DmakerFanP5c  command canced!')
+                clearTimeout(existingTimeoutId);
+                timeoutsMap.delete(key);
+            }
+
+            // 执行
+            return new Promise((resolve, reject) => {
+                const timeoutId = setTimeout(() => {
+                    try {
+                        func.apply(this, args).then(resolve).catch(reject);
+                    } catch (err) {
+                        reject(err)
+                    } finally {
+                        timeoutsMap.delete(key);
+                    }
+                }, wait);
+                timeoutsMap.set(key, timeoutId);
+            })
+        }
+
+
+        return debounced;
     }
 }
 
