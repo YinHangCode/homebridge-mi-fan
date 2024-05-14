@@ -15,7 +15,7 @@ class MiotDevice {
     }
 
 
-    setProperties(siid, piid, value) {
+    setProperty(siid, piid, value) {
         let execute;
         if (this.debounce) {
             execute = this.sendCommandDebounced(this.setMethod, siid, piid, value)
@@ -29,8 +29,14 @@ class MiotDevice {
         });
     }
 
-    getProperties(siid, piid) {
-        return this.sendCommand(this.getMethod, siid, piid);
+    getProperty(siid, piid) {
+        return new Promise((resolve, reject) => {
+            this.sendCommand(this.getMethod, siid, piid).then(result => {
+                resolve(result[0]);
+            }).catch(err=>{
+                reject(err)
+            })
+        })
     }
 
 
