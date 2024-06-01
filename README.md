@@ -96,7 +96,7 @@ npm install -g homebridge-mi-fan
         "type": "DmakerFanP5c",
         "ip": "192.168.1.xxx",
         "token": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
-        "deviceId":"xxxxxxx",
+        "deviceId":"Default: "" (not specified)",
         "fanName": "room fan",
         "fanDisable": false,
         "buzzerSwitchName": "fan buzzer switch",
@@ -137,6 +137,10 @@ Wait until you get output.
 For more information about token, please refer to [OpenMiHome](https://github.com/OpenMiHome/mihome-binary-protocol) and [miio](https://github.com/aholstenson/miio).   
 
 ## Version Logs
+### 0.1.3 (2024-06-01)
+1.bug fixes
+2.configuration :  The deviceId will be automatically retrieved by the plugin but if there is trouble you can manually specify it.
+3.Implemented request debounce to prevent repeated actions within a short timeframe(for P5c)
 ### 0.1.2 (2024-04-24)
 1.add support for DmakerFanP5c.
 ### 0.1.1 (2019-06-03)

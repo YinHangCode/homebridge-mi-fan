@@ -59,7 +59,7 @@ DmakerFanP5cAccessory.prototype.getServices = function () {
     infoService
         .setCharacteristic(Characteristic.Manufacturer, "XiaoMi")
         .setCharacteristic(Characteristic.Model, "DmakerFanP5c")
-        .setCharacteristic(Characteristic.SerialNumber, "9527");
+        .setCharacteristic(Characteristic.SerialNumber, "undefined");
     services.push(infoService);
 
     var fanService = new Service.Fanv2(this.name);
@@ -72,8 +72,8 @@ DmakerFanP5cAccessory.prototype.getServices = function () {
     activeCharacteristic
         .on('get', function (callback) {
             that.device.getProperty(2, 1).then(result => {
-                that.platform.log.debug("[MiFanPlatform][DEBUG]DmakerFanP5cAccessory - Active - getActive: " + JSON.stringify(result[0]));
-                if (result[0].code === 0 && result[0].value === true) {
+                that.platform.log.debug("[MiFanPlatform][DEBUG]DmakerFanP5cAccessory - Active - getActive: " + JSON.stringify(result));
+                if (result.code === 0 && result.value === true) {
                     callback(null, Characteristic.Active.ACTIVE);
                 } else {
                     callback(null, Characteristic.Active.INACTIVE);
@@ -92,8 +92,8 @@ DmakerFanP5cAccessory.prototype.getServices = function () {
     lockPhysicalControlsCharacteristic
         .on('get', function (callback) {
             that.device.getProperty(7, 1).then(result => {
-                that.platform.log.debug("[MiFanPlatform][DEBUG]DmakerFanP5cAccessory - LockPhysicalControls - getLockPhysicalControls: " + JSON.stringify(result[0]));
-                if (result[0].value === true) {
+                that.platform.log.debug("[MiFanPlatform][DEBUG]DmakerFanP5cAccessory - LockPhysicalControls - getLockPhysicalControls: " + JSON.stringify(result));
+                if (result.value === true) {
                     callback(null, Characteristic.LockPhysicalControls.CONTROL_LOCK_ENABLED);
                 } else {
                     callback(null, Characteristic.LockPhysicalControls.CONTROL_LOCK_DISABLED);
@@ -113,8 +113,8 @@ DmakerFanP5cAccessory.prototype.getServices = function () {
     swingModeControlsCharacteristic
         .on('get', function (callback) {
             that.device.getProperty(2, 4).then(result => {
-                that.platform.log.debug("[MiFanPlatform][DEBUG]DmakerFanP5cAccessory - SwingMode - getSwingModeControls: " + JSON.stringify(result[0]));
-                if (result[0].code === 0 && result[0].value === true) {
+                that.platform.log.debug("[MiFanPlatform][DEBUG]DmakerFanP5cAccessory - SwingMode - getSwingModeControls: " + JSON.stringify(result));
+                if (result.code === 0 && result.value === true) {
                     callback(null, Characteristic.SwingMode.SWING_ENABLED);
                 } else {
                     callback(null, Characteristic.SwingMode.SWING_DISABLED);
@@ -134,8 +134,8 @@ DmakerFanP5cAccessory.prototype.getServices = function () {
     rotationSpeedCharacteristic
         .on('get', function (callback) {
             that.device.getProperty(8, 1).then(result => {
-                that.platform.log.debug("[MiFanPlatform][DEBUG]DmakerFanP5cAccessory - RotationSpeed - getRotationSpeed: " + JSON.stringify(result[0]));
-                callback(null, result[0].value);
+                that.platform.log.debug("[MiFanPlatform][DEBUG]DmakerFanP5cAccessory - RotationSpeed - getRotationSpeed: " + JSON.stringify(result));
+                callback(null, result.value);
             }).catch(function (err) {
                 that.platform.log.error("[MiFanPlatform][ERROR]DmakerFanP5cAccessory - RotationSpeed - getRotationSpeed Error: " + err);
                 callback(err);
@@ -151,8 +151,8 @@ DmakerFanP5cAccessory.prototype.getServices = function () {
     rotationDirectionCharacteristic
         .on('get', function (callback) {
             that.device.getProperty(2, 3).then(result => {
-                that.platform.log.debug("[MiFanPlatform][DEBUG]DmakerFanP5cAccessory - RotationDirection - getRotationDirection: " + JSON.stringify(result[0]));
-                if (result[0].value === 0) {
+                that.platform.log.debug("[MiFanPlatform][DEBUG]DmakerFanP5cAccessory - RotationDirection - getRotationDirection: " + JSON.stringify(result));
+                if (result.value === 0) {
                     callback(null, Characteristic.RotationDirection.CLOCKWISE);
                 } else {
                     callback(null, Characteristic.RotationDirection.COUNTER_CLOCKWISE);
@@ -202,8 +202,8 @@ DmakerFanP5cLEDBulbAccessory.prototype.getServices = function () {
 DmakerFanP5cLEDBulbAccessory.prototype.getLEDBulbState = function (callback) {
     var that = this;
     this.device.getProperty(4, 1).then(result => {
-        that.platform.log.debug("[MiFanPlatform][DEBUG]DmakerFanLEDBulbAccessory - ledBulb - getLEDBulbState: " + JSON.stringify(result[0]));
-        if (result[0].value === true) {
+        that.platform.log.debug("[MiFanPlatform][DEBUG]DmakerFanLEDBulbAccessory - ledBulb - getLEDBulbState: " + JSON.stringify(result));
+        if (result.value === true) {
             callback(null, true);
         } else {
             callback(null, false);
@@ -251,8 +251,8 @@ DmakerFanP5cBuzzerSwitchAccessory.prototype.getBuzzerState = function (callback)
     var that = this;
 
     this.device.getProperty(5, 1).then(result => {
-        that.platform.log.debug("[MiFanPlatform][DEBUG]DmakerFanBuzzerSwitchAccessory - BuzzerSwitch - getBuzzerState: " + JSON.stringify(result[0]));
-        if (result[0].value === true) {
+        that.platform.log.debug("[MiFanPlatform][DEBUG]DmakerFanBuzzerSwitchAccessory - BuzzerSwitch - getBuzzerState: " + JSON.stringify(result));
+        if (result.value === true) {
             callback(null, true);
         } else {
             callback(null, false);
